@@ -1,25 +1,49 @@
-export function reconcile(transactions) {
-  const map = {};
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Inventory Reconciliation WMS</title>
+  <link rel="stylesheet" href="../styles/main.css">
+</head>
+<body>
 
-  transactions.forEach(tx => {
-    const key = `${tx.sku}|${tx.location}`;
+<div id="login">
+  <h2>WMS Login</h2>
 
-    if (!map[key]) {
-      map[key] = {
-        sku: tx.sku,
-        location: tx.location,
-        systemQty: 0,
-        countQty: 0
-      };
-    }
+  <input id="email" placeholder="Email"><br><br>
 
-    if (tx.transactionType === "count") {
-      map[key].countQty += tx.qty;
-    } else {
-      map[key].systemQty += tx.qty;
-    }
-  });
+  <input id="password" type="password" placeholder="Password">
+  <input type="checkbox" onclick="toggle()"> Show Password<br><br>
 
-  return Object.values(map);
-}
+  <button onclick="doLogin()">Login</button>
+  <p id="error" style="color:red"></p>
+</div>
 
+<div id="app" style="display:none">
+  <h2>Inventory Reconciliation System</h2>
+  <input type="file" multiple><br><br>
+  <p>System ready for reconciliation</p>
+</div>
+
+<script type="module">
+import { login } from "../src/auth.js";
+
+window.toggle = function () {
+  const p = document.getElementById("password");
+  p.type = p.type === "password" ? "text" : "password";
+};
+
+window.doLogin = function () {
+  const email = document.getElementById("email").value;
+  const pass = document.getElementById("password").value;
+
+  if (login(email, pass)) {
+    document.getElementById("login").style.display = "none";
+    document.getElementById("app").style.display = "block";
+  } else {
+    document.getElementById("error").innerText = "Invalid login";
+  }
+};
+</script>
+
+</body>
+</html>

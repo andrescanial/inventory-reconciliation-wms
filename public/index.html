@@ -1,1 +1,25 @@
+export function reconcile(transactions) {
+  const map = {};
+
+  transactions.forEach(tx => {
+    const key = `${tx.sku}|${tx.location}`;
+
+    if (!map[key]) {
+      map[key] = {
+        sku: tx.sku,
+        location: tx.location,
+        systemQty: 0,
+        countQty: 0
+      };
+    }
+
+    if (tx.transactionType === "count") {
+      map[key].countQty += tx.qty;
+    } else {
+      map[key].systemQty += tx.qty;
+    }
+  });
+
+  return Object.values(map);
+}
 
